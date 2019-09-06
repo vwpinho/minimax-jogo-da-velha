@@ -33,7 +33,7 @@ int main(){
     n *raiz = init_tree();
     fill_tree(raiz);
     minimax(raiz,9);
-    cout << raiz->v << endl;
+    //cout << raiz->v << endl;
     free_tree(raiz,9);
     return 0;
 }
@@ -225,11 +225,17 @@ int check_winner(n *no){
 //depth first recursivo
 void minimax(n *no,int n){
     int min=2,max=2;
-    if(n==0)
-        no->v = check_winner(no);
+    
+    if(n==1){
+        no->v = check_winner(no);   
+        cout << no->v << endl; 
+        //cout << no->v << endl;
         return;
+    }
     for(int i=0;i<n;i++){
+        
         minimax(no->filho[i],n-1);
+        //print_grid(no);
     }
     //max
     if(n%2 == 0){
@@ -244,12 +250,14 @@ void minimax(n *no,int n){
             }
         }   
         no->v = max;
-    } else{
+    } 
+    // min 
+    else{
         for(int i=0;i<n;i++){
             if(min==2){
                 min=no->filho[i]->v;
             } else if(no->filho[i]->v == -1){
-                min = 1;
+                min = -1;
                 break;
             } else if(no->filho[i]->v < min){
                 min = no->filho[i]->v;
@@ -257,6 +265,7 @@ void minimax(n *no,int n){
         }   
         no->v = min;
     }
+    return;
 }
 p* init_pilha(){
     p* pilha = (p*)malloc(sizeof(p));
