@@ -11,6 +11,11 @@ typedef struct Node{
     struct Node * filho[9];
     int v;
 }n;
+typedef struct Pilha{
+    Node* node;
+    Pilha* topo;
+    Pilha *prev;
+}p;
 
 n * init_tree();
 void fill_tree(n *r);
@@ -20,7 +25,9 @@ void print_grid(n *no);
 void copy_state(n *n1, n*n2);
 void free_tree(n * no,int n);
 int check_winner(n *no);
-
+void minimax(n *no,int n);
+p* init_pilha();
+void insere_p(n *no);
 
 int main(){
     n *raiz = init_tree();
@@ -51,7 +58,7 @@ void fill_tree(n *r){
         aux[1] = aux[0]->filho[i];
         clear_state(aux[1]);
         mark(aux[1],i,X);
-        print_grid(aux[1]);
+        //print_grid(aux[1]);
         for(int j=0;j<8;j++){
             //cout << "test2" << endl;
             aux[1]->filho[j] = (n*) malloc(sizeof(n));
@@ -166,16 +173,23 @@ void copy_state(n *n1, n*n2){
 }
 
 void free_tree(n * no, int n){
-    if(n=0)
-        return;
-    for(int i=0; i<n; i++){
-        free_tree(no->filho[i],n-1);
+    if(n==0){
         for(int j=0;j<3;j++){
             free(no->estado[j]);
         }
         free(no->estado);
         free(no);
+        return;
     }
+
+    for(int i=0; i<n; i++){
+        free_tree(no->filho[i],n-1);
+    }
+    for(int j=0;j<3;j++){
+            free(no->estado[j]);
+        }
+        free(no->estado);
+        free(no);
 }
 
 int check_winner(n *no){
@@ -206,6 +220,18 @@ int check_winner(n *no){
     return 0;
 }
 
+void minimax(n *no,int n){
+    if(n==0)
+        return;
+}
+p* init_pilha(){
+    p* pilha = (p*)malloc(sizeof(p));
+    pilha->topo = NULL;
+    pilha->prev = NULL;
+}
+void insere_p(n *no){
+
+}
  // if(j%2==0)
             //     x = X;
             // else
