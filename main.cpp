@@ -19,6 +19,7 @@ void mark(n *no, int i, int m);
 void print_grid(n *no);
 void copy_state(n *n1, n*n2);
 void free_tree(n * no,int n);
+int check_winner(n *no);
 
 
 int main(){
@@ -173,6 +174,35 @@ void free_tree(n * no, int n){
         free(no);
     }
 }
+
+int check_winner(n *no){
+    //Checa linhas
+    for(int i=0;i<3;i++){
+        if(no->estado[i][0] == no->estado[i][1] == no->estado[i][2]){
+            if(no->estado[i][0] == X)
+                return 1;
+            else 
+                return -1;        
+        }
+    }
+    //Checa colunas
+    for(int i=0;i<3;i++){
+        if(no->estado[0][i] == no->estado[1][i] == no->estado[2][i]){
+            if(no->estado[0][i] == X)
+                return 1;
+            else 
+                return -1;        
+        }
+    }
+    if(no->estado[1][1] == no->estado[2][2] == no->estado[3][3] || no->estado[1][3] == no->estado[2][2] == no->estado[3][1]){
+        if(no->estado[2][2] == X)
+            return 1;
+        else 
+            return -1;        
+    }
+    return 0;
+}
+
  // if(j%2==0)
             //     x = X;
             // else
