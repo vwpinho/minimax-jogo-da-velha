@@ -9,13 +9,13 @@ using namespace std;
 typedef struct Node{
     int **estado;
     struct Node * filho[9];
-    int v;
+    int v = 2;
 }n;
-typedef struct Pilha{
-    Node* node;
-    Pilha* topo;
-    Pilha *prev;
-}p;
+// typedef struct Pilha{
+//     Node* node;
+//     Pilha* topo;
+//     Pilha *prev;
+// }p;
 
 n * init_tree();
 void fill_tree(n *r);
@@ -26,20 +26,22 @@ void copy_state(n *n1, n*n2);
 void free_tree(n * no,int n);
 int check_winner(n *no);
 void minimax(n *no,int n);
-p* init_pilha();
-void insere_p(n *no);
+void print_minimax(n* no, int n, int f);
+//p* init_pilha();
+//void insere_p(n *no);
 
+// Funcao principal
 int main(){
     n *raiz = init_tree();
     fill_tree(raiz);
     minimax(raiz,9);
-    
-    cout << raiz->v << endl;
+    print_minimax(raiz,9,0);
+    //cout << raiz->v << endl;
     free_tree(raiz,9);
     return 0;
 }
 
-
+// Inicia os parametros da raiz
 n * init_tree(){
     n * t;
     t = (n*)malloc(1*sizeof(n));
@@ -51,6 +53,8 @@ n * init_tree(){
         t->filho[i] = NULL;
     return t;
 }
+
+// Prenche a tree com todos os estados possiveis
 void fill_tree(n *r){
     n * aux[10];
     int x;
@@ -86,39 +90,56 @@ void fill_tree(n *r){
                         aux[5] = aux[4]->filho[m];
                         copy_state(aux[4],aux[5]);
                         mark(aux[5],m,X);
-                        for(int o=0;o<4;o++){
-                            //cout << "test6" << endl;
-                            aux[5]->filho[o] = (n*) malloc(sizeof(n));
-                            aux[6] = aux[5]->filho[o];
-                            copy_state(aux[5],aux[6]);
-                            mark(aux[6],o,O);
-                            for(int p=0;p<3;p++){
-                                //cout << "test7" << endl;
-                                aux[6]->filho[p] = (n*) malloc(sizeof(n));
-                                aux[7] = aux[6]->filho[p];
-                                copy_state(aux[6],aux[7]);
-                                mark(aux[7],p,X);
-                                for(int q=0;q<2;q++){
-                                    //cout << "test8" << endl;
-                                    aux[7]->filho[q] = (n*) malloc(sizeof(n));
-                                    aux[8] = aux[7]->filho[q];
-                                    copy_state(aux[7],aux[8]);
-                                    mark(aux[8],q,O);
-                                    aux[8]->filho[0] = (n*) malloc(sizeof(n));
-                                    aux[9] = aux[8]->filho[0];
-                                    copy_state(aux[8],aux[9]);
-                                    mark(aux[9],0,X);
+                        //CHECKAR POR VITORIA A PARTIR DAQUI
+                        if(int a=check_winner(aux[5])){
+                            aux[5]->v = a;
+                        } else {
+                            for(int o=0;o<4;o++){
+                                //cout << "test6" << endl;
+                                aux[5]->filho[o] = (n*) malloc(sizeof(n));
+                                aux[6] = aux[5]->filho[o];
+                                copy_state(aux[5],aux[6]);
+                                mark(aux[6],o,O);
+                                if(int a=check_winner(aux[6])){
+                                    aux[6]->v = a;
+                                } else {
+                                    for(int p=0;p<3;p++){
+                                        //cout << "test7" << endl;
+                                        aux[6]->filho[p] = (n*) malloc(sizeof(n));
+                                        aux[7] = aux[6]->filho[p];
+                                        copy_state(aux[6],aux[7]);
+                                        mark(aux[7],p,X);
+                                        if(int a=check_winner(aux[7])){
+                                            aux[7]->v = a;
+                                        } else {
+                                            for(int q=0;q<2;q++){
+                                                //cout << "test8" << endl;
+                                                aux[7]->filho[q] = (n*) malloc(sizeof(n));
+                                                aux[8] = aux[7]->filho[q];
+                                                copy_state(aux[7],aux[8]);
+                                                mark(aux[8],q,O);
+                                                if(int a=check_winner(aux[8])){
+                                                    aux[8]->v = a;
+                                                } else {
+                                                    aux[8]->filho[0] = (n*) malloc(sizeof(n));
+                                                    aux[9] = aux[8]->filho[0];
+                                                    copy_state(aux[8],aux[9]);
+                                                    mark(aux[9],0,X);
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
                     }
                 }
-            }
-           
+            }   
         }
-
     }
 }
+
+// Aloca o estado na memoria e poe os valores todos em zero
 void clear_state(n *no){
     no->estado = (int**) malloc(3*sizeof(int*));
     for(int i=0;i<3;i++)
@@ -128,6 +149,12 @@ void clear_state(n *no){
             no->estado[i][j] = empt;
     }
 }
+
+/* Marca no estado do no, na n-esima posicao livre o simbolo m
+@param1 no
+@param2 posicao
+@param3 simbolo a ser marcado
+*/ 
 void mark(n *no, int i, int m){
     int n1,n2,n3,j=0,k=0,l=0;
     
@@ -154,6 +181,7 @@ void mark(n *no, int i, int m){
     }
 }
 
+// Imprime o estado do no
 void print_grid(n *no){
     for(int i=0;i<3;i++){
         for(int j=0;j<3;j++)
@@ -175,6 +203,7 @@ void copy_state(n *n1, n*n2){
     }
 }
 
+// Libera o espaco de mem ocupado pela tree
 void free_tree(n * no, int n){
     if(n==0){
         for(int j=0;j<3;j++){
@@ -186,7 +215,8 @@ void free_tree(n * no, int n){
     }
 
     for(int i=0; i<n; i++){
-        free_tree(no->filho[i],n-1);
+        if(no->filho[i]!= NULL)
+            free_tree(no->filho[i],n-1);
     }
     for(int j=0;j<3;j++){
             free(no->estado[j]);
@@ -195,6 +225,7 @@ void free_tree(n * no, int n){
         free(no);
 }
 
+// Verifica se em dado estado teve um vencedor
 int check_winner(n *no){
     //Checa linhas
     for(int i=0;i<3;i++){
@@ -235,8 +266,9 @@ void minimax(n *no,int n){
         //cout << no->v << endl;
         return;
     }
-    for(int i=0;i<n;i++){ 
-        minimax(no->filho[i],n-1);
+    for(int i=0;i<n;i++){
+        if(no->filho[i]->v == 2) 
+            minimax(no->filho[i],n-1);
         //print_grid(no);
     }
     //max
@@ -269,14 +301,27 @@ void minimax(n *no,int n){
     }
     return;
 }
-p* init_pilha(){
-    p* pilha = (p*)malloc(sizeof(p));
-    pilha->topo = NULL;
-    pilha->prev = NULL;
+void print_minimax(n* no,int n,int f){
+    int l = 10-n;
+    if(n==1){
+        cout << "l:" << l << " f:" << f << " v:" << no->v << endl;
+        return;
+    }
+    for(int i=0;i<n;i++){
+        if(no->filho[i] != NULL)
+            print_minimax(no->filho[i],n-1,i);
+    }
+    cout << "l:" << l << " f:" << f << " v:" << no->v << endl;
+    return;
 }
-void insere_p(n *no){
+// p* init_pilha(){
+//     p* pilha = (p*)malloc(sizeof(p));
+//     pilha->topo = NULL;
+//     pilha->prev = NULL;
+// }
+// void insere_p(n *no){
 
-}
+// }
  // if(j%2==0)
             //     x = X;
             // else
