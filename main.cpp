@@ -32,6 +32,8 @@ void insere_p(n *no);
 int main(){
     n *raiz = init_tree();
     fill_tree(raiz);
+    minimax(raiz,9);
+    cout << raiz->v << endl;
     free_tree(raiz,9);
     return 0;
 }
@@ -220,9 +222,41 @@ int check_winner(n *no){
     return 0;
 }
 
+//depth first recursivo
 void minimax(n *no,int n){
+    int min=2,max=2;
     if(n==0)
+        no->v = check_winner(no);
         return;
+    for(int i=0;i<n;i++){
+        minimax(no->filho[i],n-1);
+    }
+    //max
+    if(n%2 == 0){
+        for(int i=0;i<n;i++){
+            if(max==2){
+                max=no->filho[i]->v;
+            } else if(no->filho[i]->v == 1){
+                max = 1;
+                break;
+            } else if(no->filho[i]->v > max){
+                max = no->filho[i]->v;
+            }
+        }   
+        no->v = max;
+    } else{
+        for(int i=0;i<n;i++){
+            if(min==2){
+                min=no->filho[i]->v;
+            } else if(no->filho[i]->v == -1){
+                min = 1;
+                break;
+            } else if(no->filho[i]->v < min){
+                min = no->filho[i]->v;
+            }
+        }   
+        no->v = min;
+    }
 }
 p* init_pilha(){
     p* pilha = (p*)malloc(sizeof(p));
