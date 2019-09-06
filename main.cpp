@@ -24,7 +24,7 @@ void free_tree(n * no,int n);
 int main(){
     n *raiz = init_tree();
     fill_tree(raiz);
-    //free_tree(raiz,9);
+    free_tree(raiz,9);
     return 0;
 }
 
@@ -162,6 +162,8 @@ void copy_state(n *n1, n*n2){
 }
 
 void free_tree(n * no, int n){
+    if(n=0)
+        return;
     for(int i=0; i<n; i++){
         free_tree(no->filho[i],n-1);
         for(int j=0;j<3;j++){
