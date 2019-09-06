@@ -33,7 +33,8 @@ int main(){
     n *raiz = init_tree();
     fill_tree(raiz);
     minimax(raiz,9);
-    //cout << raiz->v << endl;
+    
+    cout << raiz->v << endl;
     free_tree(raiz,9);
     return 0;
 }
@@ -213,8 +214,9 @@ int check_winner(n *no){
                 return -1;        
         }
     }
-    if(no->estado[1][1] == no->estado[2][2] == no->estado[3][3] || no->estado[1][3] == no->estado[2][2] == no->estado[3][1]){
-        if(no->estado[2][2] == X)
+    //Checa diagonais
+    if(no->estado[0][0] == no->estado[1][1] == no->estado[2][2] || no->estado[0][2] == no->estado[1][1] == no->estado[2][0]){
+        if(no->estado[1][1] == X)
             return 1;
         else 
             return -1;        
@@ -227,13 +229,13 @@ void minimax(n *no,int n){
     int min=2,max=2;
     
     if(n==1){
-        no->v = check_winner(no);   
-        cout << no->v << endl; 
+        //cout <<  << endl;
+        no->v = check_winner(no->filho[0]);   
+        //cout << no->v << endl;
         //cout << no->v << endl;
         return;
     }
-    for(int i=0;i<n;i++){
-        
+    for(int i=0;i<n;i++){ 
         minimax(no->filho[i],n-1);
         //print_grid(no);
     }
