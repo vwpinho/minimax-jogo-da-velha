@@ -42,7 +42,7 @@ n * init_tree(){
     return t;
 }
 void fill_tree(n *r){
-    n * aux[9];
+    n * aux[10];
     int x;
     aux[0] = r;
     for(int i=0;i<9;i++){
@@ -94,7 +94,10 @@ void fill_tree(n *r){
                                     aux[8] = aux[7]->filho[q];
                                     copy_state(aux[7],aux[8]);
                                     mark(aux[8],q,O);
-                                    mark(aux[8],1,X);
+                                    aux[8]->filho[0] = (n*) malloc(sizeof(n));
+                                    aux[9] = aux[8]->filho[0];
+                                    copy_state(aux[8],aux[9]);
+                                    mark(aux[9],0,X);
                                 }
                             }
                         }
