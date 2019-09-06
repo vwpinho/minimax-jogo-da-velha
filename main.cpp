@@ -1,8 +1,8 @@
 #include <iostream>
 #include <stdlib.h>
 
-#define O 1
-#define X 2
+#define X 1
+#define O 2
 #define empt 0
 
 using namespace std;
@@ -229,7 +229,7 @@ void free_tree(n * no, int n){
 int check_winner(n *no){
     //Checa linhas
     for(int i=0;i<3;i++){
-        if(no->estado[i][0] == no->estado[i][1] == no->estado[i][2]){
+        if((no->estado[i][0] == no->estado[i][1]) && (no->estado[i][1] == no->estado[i][2])){
             if(no->estado[i][0] == X)
                 return 1;
             else 
@@ -238,7 +238,7 @@ int check_winner(n *no){
     }
     //Checa colunas
     for(int i=0;i<3;i++){
-        if(no->estado[0][i] == no->estado[1][i] == no->estado[2][i]){
+        if((no->estado[0][i] == no->estado[1][i]) && (no->estado[1][i] == no->estado[2][i])){
             if(no->estado[0][i] == X)
                 return 1;
             else 
@@ -246,7 +246,7 @@ int check_winner(n *no){
         }
     }
     //Checa diagonais
-    if(no->estado[0][0] == no->estado[1][1] == no->estado[2][2] || no->estado[0][2] == no->estado[1][1] == no->estado[2][0]){
+    if(((no->estado[0][0] == no->estado[1][1]) && (no->estado[1][1] == no->estado[2][2])) || ((no->estado[0][2] == no->estado[1][1]) && (no->estado[1][1] == no->estado[2][0]))){
         if(no->estado[1][1] == X)
             return 1;
         else 
@@ -303,16 +303,20 @@ void minimax(n *no,int n){
 }
 void print_minimax(n* no,int n,int f){
     int l = 10-n;
-    if(n==1){
-        cout << "l:" << l << " f:" << f << " v:" << no->v << endl;
+    if(n==0){
+        //cout << "l:" << l << " f:" << f << " v:" << no->v << endl;
+        cout << "l:" << l << " v:" << no->v << endl;
+        print_grid(no);
         return;
     }
     for(int i=0;i<n;i++){
         if(no->filho[i] != NULL)
             print_minimax(no->filho[i],n-1,i);
     }
-    cout << "l:" << l << " f:" << f << " v:" << no->v << endl;
-    return;
+    //cout << "l:" << l << " f:" << f << " v:" << no->v << endl;
+    cout << "l:" << l << " v:" << no->v << endl;
+    print_grid(no);
+   
 }
 // p* init_pilha(){
 //     p* pilha = (p*)malloc(sizeof(p));
